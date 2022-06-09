@@ -17,3 +17,4 @@ Construct lazy streams with the `stream` macro.
     (lambda () (cons 1 (lambda () (cons 2 '()))))
     ```
 - Turn lists into streams with `list->stream` and vice versa with `stream->list`
+- Append streams with `stream-append`
