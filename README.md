@@ -18,7 +18,7 @@ which compiles to
 (lambda () (cons (lambda () 1) (lambda () (cons (lambda () 2) (lambda () (cons (lambda () 3) '()))))))
 ```
 
-Since streams are represented this way they can be evaluated once to be checked with `null?` and `pair?` without touching the individual values and values can be accessed with `car` and `cdr` (The suspensions still need to be evaluated, ofcourse).
+Since streams are represented this way they can be evaluated once to be checked with `null?` and `pair?` without touching the individual values. The values can be accessed with `car` and `cdr` (The suspensions still need to be evaluated, ofcourse).
 
 ## Utility procedures
 
