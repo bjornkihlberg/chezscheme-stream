@@ -1,7 +1,12 @@
 (library (stream)
-  (export stream)
+  (export list->stream stream stream->list)
   (import (chezscheme))
   (define-syntax stream
-    (syntax-rules ()
-      [(_) '()]
-      [(_ x xs ...) (lambda () (cons x (stream xs ...)))])))
+    (syntax-rules () [(_) '()] [(_ x xs ...) (lambda () (cons x (stream xs ...)))]))
+  (define (stream->list xs)
+    (let loop ([acc '()] [xs xs])
+      (if (null? xs)
+          (reverse acc)
+          (let ([xs (xs)]) (loop (cons (car xs) acc) (cdr xs))))))
+  (define (list->stream xs)
+    (if (null? xs) '() (lambda () (cons (car xs) (list->stream (cdr xs)))))))
