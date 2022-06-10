@@ -27,7 +27,7 @@ Since streams are represented this way they can be evaluated once to be checked 
 - `stream-for-each`
 - `stream-append` appends any number of streams
 
-## Utility procedures for functional programming
+## Utilities for functional programming
 
 - `stream-take` cuts off a stream after `n` elements.
   ```scheme
@@ -64,4 +64,47 @@ Since streams are represented this way they can be evaluated once to be checked 
 - `stream-flat-map` maps individual elements to streams and appends them
   ```scheme
   (stream-flat-map (lambda (x) (stream 'hey 'ho x)) (stream 1 2)) ; (stream 'hey 'ho 1 'hey 'ho 2)
+  ```
+
+## Utilities for logic programming
+
+### `stream-let`
+
+The `stream-let` macro is basically `do` notation from Haskell but more in line with the design of `let`.
+
+```scheme
+(stream-let ([x (stream 1 2 3)])
+  (stream 'hello x)) ; (stream 'hello 1 'hello 2 'hello 3)
+```
+
+`stream-let` is algorithmically powerful when used together with the following procedures:
+
+- `(stream-when value)` fails an execution branch when `value` is `#f`
+  ```scheme
+  (stream-let ([x (stream 1 2 3 4 5 6)])
+    (stream-when (odd? x))
+    (stream x)) ; (stream 1 3 5)
+  ```
+- `(stream-unless value)` fails an execution branch if `value` is truthy
+  ```scheme
+  (stream-let ([x (stream 1 2 3 4 5 6)])
+    (stream-unless (odd? x))
+    (stream x)) ; (stream 2 4 6)
+  ```
+- `(stream-not stream)` fails an execution branch when passed a non-empty stream and succeeds when passed an empty stream
+  ```scheme
+  (stream-let ([x (stream 1 2 3 4 5 6)])
+    (stream-not (stream-unless (odd? x)))
+    (stream x)) ; (stream 1 3 5)
+  ```
+- `(stream-if test-stream kleisli else-stream)` returns the flat map of `kleisli` on `test-stream` if `test-stream` is a non-empty stream, else it returns the stream `else-stream`
+  ```scheme
+  (stream-if
+    (stream 1 2 3)
+    (lambda (x) (stream x 'hey 'ho))
+    (stream 'huey 'dewey 'louie)) ; (stream 1 'hey 'ho 2 'hey 'ho 3 'hey 'ho)
+  ```
+- `(stream-once stream)` returns a stream with the first element of `stream` or an empty stream if `stream` is empty
+  ```scheme
+  (stream-once (stream 'huey 'dewey 'louie)) ; (stream 'huey)
   ```

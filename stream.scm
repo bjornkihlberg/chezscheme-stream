@@ -8,12 +8,18 @@
           stream-filter-map
           stream-flat-map
           stream-for-each
+          stream-if
           stream-iterate
+          stream-let
           stream-map
+          stream-not
+          stream-once
           stream-skip
           stream-skip-while
           stream-take
-          stream-take-while)
+          stream-take-while
+          stream-unless
+          stream-when)
   (import (chezscheme))
   (define-syntax stream-cons
     (syntax-rules () [(_ x xs) (lambda () (cons (lambda () x) xs))]))
@@ -104,4 +110,20 @@
     (let loop ([xs xs])
       (lambda ()
         (let ([xs (xs)])
-          (if (null? xs) '() ((stream-append (f ((car xs))) (loop (cdr xs))))))))))
+          (if (null? xs) '() ((stream-append (f ((car xs))) (loop (cdr xs)))))))))
+  (define (stream-when x) (if x (stream (void)) (stream)))
+  (define (stream-unless x) (if x (stream) (stream (void))))
+  (define (stream-not xs) (if (null? (xs)) (stream (void)) (stream)))
+  (define (stream-if test-stream f else-stream)
+    (let ([test-stream (test-stream)])
+      (if (null? test-stream)
+          else-stream
+          (stream-flat-map f (lambda () test-stream)))))
+  (define (stream-once xs)
+    (lambda () (let ([xs (xs)]) (if (null? xs) '() (cons (car xs) (stream))))))
+  (define-syntax stream-let
+    (syntax-rules ()
+      [(_ () e) e]
+      [(_ () e es ...) (stream-flat-map (lambda (x) (stream-let () es ...)) e)]
+      [(_ ((x v) xs ...) es ...)
+       (stream-flat-map (lambda (x) (stream-let (xs ...) es ...)) v)])))
