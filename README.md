@@ -22,10 +22,22 @@ Since streams are represented this way they can be evaluated once to be checked 
 
 ## Utility procedures
 
-- `stream->list`
-- `list->stream`
-- `stream-for-each`
-- `stream-append` appends any number of streams
+- `(stream->list stream)` collects elements from `stream` and returns them in a list
+  ```scheme
+  (stream->list (stream 1 2 3)) ; '(1 2 3)
+  ```
+- `(list->stream list)` populates a stream with elements from `list`
+  ```scheme
+  (list->stream '(1 2 3)) ; (stream 1 2 3)
+  ```
+- `(stream-for-each f stream . streams)` zips `stream` and `streams`, runs them with `f` and returns `(void)`
+  ```scheme
+  (stream-for-each (lambda (x) (format #t "~a\n" x)) (stream 1 2 3)) ; (void)
+  ```
+- `(stream-append . streams)` appends `streams`
+  ```scheme
+  (stream-append (stream 1 2) (stream 3 4) (stream 5 6)) ; (stream 1 2 3 4 5 6)
+  ```
 
 ## Utilities for functional programming
 
