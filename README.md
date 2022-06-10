@@ -82,12 +82,24 @@ Since streams are represented this way they can be evaluated once to be checked 
 
 ### `stream-let`
 
-The `stream-let` macro is basically `do` notation from Haskell but more in line with the design of `let`.
+The `stream-let` and `stream-do` macros are basically `do` notation from Haskell. `stream-let` resembles the design of `let` in Scheme while `stream-do` resembles the designed of `do` in Haskell. `stream-do` is designed to only work with streams.
 
 ```scheme
 (stream-let ([x (stream 1 2 3)])
   (stream 'hello x)) ; (stream 'hello 1 'hello 2 'hello 3)
 ```
+
+```scheme
+(stream-do
+  (<- x (stream 1 2))
+  (define z (add1 x))
+  (stream-when (odd? x))
+  (define (f x) (* x 2))
+  (<- y (stream "huey" "dewey" "louie"))
+  (stream (cons (f z) y))) ; (stream '(4 . "huey") '(4 . "dewey") '(4 . "louie"))
+```
+
+_For `stream-do` to work with monads in general we'd need some system for generic procedures which is out of scope for this library._
 
 `stream-let` is algorithmically powerful when used together with the following procedures:
 

@@ -1,9 +1,11 @@
 (library (stream)
-  (export list->stream
+  (export <-
+          list->stream
           stream
           stream->list
           stream-append
           stream-cons
+          stream-do
           stream-filter
           stream-filter-map
           stream-flat-map
@@ -126,4 +128,11 @@
       [(_ () e) e]
       [(_ () e es ...) (stream-flat-map (lambda (x) (stream-let () es ...)) e)]
       [(_ ((x v) xs ...) es ...)
-       (stream-flat-map (lambda (x) (stream-let (xs ...) es ...)) v)])))
+       (stream-flat-map (lambda (x) (stream-let (xs ...) es ...)) v)]))
+  (define-syntax <- (lambda (x) (syntax-error x "invalid context")))
+  (define-syntax stream-do
+    (syntax-rules (<- define)
+      [(_ (<- x v) e es ...) (stream-flat-map (lambda (x) (stream-do e es ...)) v)]
+      [(_ (define x v ...) e es ...) (begin (define x v ...) (stream-do e es ...))]
+      [(_ e) e]
+      [(_ e es ...) (stream-flat-map (lambda (x) (stream-do es ...)) e)])))
