@@ -73,7 +73,7 @@ Since streams are represented this way they can be evaluated once to be checked 
   ```scheme
   (stream-iterate add1 0) ; (stream 0 1 2 3 4 ...
   ```
-- `(stream-flat-map f stream . streams)` maps individual elements to streams with `f` and appends them
+- `(stream-flat-map kleisli stream . streams)` maps individual elements to streams with `kleisli` and appends them
   ```scheme
   (stream-flat-map (lambda (x) (stream 'hey 'ho x)) (stream 1 2)) ; (stream 'hey 'ho 1 'hey 'ho 2)
   ```
