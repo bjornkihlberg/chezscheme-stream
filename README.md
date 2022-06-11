@@ -65,6 +65,10 @@ Since streams are represented this way they can be evaluated once to be checked 
   ```scheme
   (stream-filter odd? (stream 1 2 3 4 5 6 7 8 9)) ; (stream 1 3 5 7 9)
   ```
+- `(stream-find predicate stream)` keeps the first element from `stream` passing `predicate`
+  ```scheme
+  (stream-find even? (stream 1 2 3 4 5 6 7 8 9)) ; (stream 2)
+  ```
 - `(stream-filter-map f stream . streams)` zips, maps and keeps truthy elements returned by `f`
   ```scheme
   (stream-filter-map (lambda (x) (and (even? x) (- x))) (stream 1 2 3 4)) ; (stream -2 -4)

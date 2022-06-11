@@ -8,6 +8,7 @@
           stream-do
           stream-filter
           stream-filter-map
+          stream-find
           stream-flat-map
           stream-for-each
           stream-if
@@ -123,6 +124,7 @@
           (stream-flat-map f (lambda () test-stream)))))
   (define (stream-once xs)
     (lambda () (let ([xs (xs)]) (if (null? xs) '() (cons (car xs) (stream))))))
+  (define (stream-find f xs) (stream-once (stream-filter f xs)))
   (define-syntax stream-let
     (syntax-rules ()
       [(_ () e) e]
